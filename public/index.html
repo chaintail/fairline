@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FairLine — model-vs-market pricing oracle</title>
+  <meta name="description" content="FairLine reprices a soccer match continuously from TxLINE score and clock state, publishes signed fair odds as an SSE feed, and logs edge versus the de-margined market consensus." />
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚖️</text></svg>" />
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <span class="mark">⚖</span>
+      <span class="name">FairLine</span>
+      <span class="tag">model-vs-market pricing oracle</span>
+    </div>
+    <nav class="modes" id="modeTabs">
+      <button data-mode="replay" class="active">Replay</button>
+      <button data-mode="live">Live · World Cup Final</button>
+    </nav>
+    <div class="chips">
+      <span id="dataChip" class="chip synthetic">SYNTHETIC FIXTURE</span>
+      <span id="sigChip" class="chip muted">signature —</span>
+      <span id="connChip" class="chip muted">connecting…</span>
+    </div>
+  </header>
+
+  <section class="scoreboard" id="scoreboard">
+    <div class="team home">
+      <span class="team-name" id="homeName">—</span>
+      <span class="cards" id="homeCards"></span>
+    </div>
+    <div class="mid">
+      <div class="score" id="scoreLine">– : –</div>
+      <div class="clock"><span id="clock">0:00</span><span class="phase" id="phase">pre-match</span></div>
+    </div>
+    <div class="team away">
+      <span class="cards" id="awayCards"></span>
+      <span class="team-name" id="awayName">—</span>
+    </div>
+  </section>
+
+  <main>
+    <section class="panel chart-panel">
+      <div class="panel-head">
+        <h2>Win probability — model <span class="swatch-line solid"></span> vs consensus <span class="swatch-line dashed"></span></h2>
+        <div class="legend" id="probLegend"></div>
+      </div>
+      <div class="chart-wrap"><svg id="probChart" preserveAspectRatio="none"></svg><div id="probTip" class="tooltip"></div></div>
+    </section>
+
+    <section class="panel chart-panel">
+      <div class="panel-head">
+        <h2>Edge — model minus consensus (probability points)</h2>
+        <div class="legend" id="edgeLegend"></div>
+      </div>
+      <div class="chart-wrap"><svg id="edgeChart" preserveAspectRatio="none"></svg><div id="edgeTip" class="tooltip"></div></div>
+    </section>
+
+    <div class="row">
+      <section class="panel board-panel">
+        <div class="panel-head"><h2>Price board</h2><span class="board-note" id="boardNote"></span></div>
+        <table class="board" id="board">
+          <thead><tr><th>Market</th><th>Model p</th><th>Fair price</th><th>Consensus p</th><th>Edge (pp)</th><th>EV @ consensus</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <section class="panel feed-panel">
+        <div class="panel-head"><h2>The oracle feed</h2></div>
+        <p class="feed-desc">Every tick is an Ed25519-signed envelope on a public SSE feed. Subscribe:</p>
+        <pre class="code" id="curlFeed">curl -N "…/api/feed?mode=replay"</pre>
+        <p class="feed-desc">Verify any envelope against the feed public key:</p>
+        <pre class="code" id="pubkey">key: loading…</pre>
+        <div class="feed-links">
+          <a id="dlJson" href="/api/edge-log?mode=replay" target="_blank" rel="noopener">Edge log (JSON)</a>
+          <a id="dlCsv" href="/api/edge-log?mode=replay&format=csv">Edge log (CSV)</a>
+          <a href="/docs.html">Feed schema &amp; model docs</a>
+          <a href="https://github.com/chaintail/fairline" target="_blank" rel="noopener">Source</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <p id="honesty">
+      <strong>What you are looking at:</strong> <span id="honestyText">Replay mode replays a deterministic, seeded <em>synthetic</em> TxLINE-shaped fixture — synthetic score events and a simulated de-margined consensus path — through exactly the code path a live TxLINE feed enters. It demonstrates the engine's mechanics, not real-world alpha. Live mode ingests the real TxLINE StablePrice feed (free World Cup tier, 60-second batch delay) for the 2026 World Cup Final.</span>
+    </p>
+  </footer>
+  <script src="/app.js"></script>
+</body>
+</html>

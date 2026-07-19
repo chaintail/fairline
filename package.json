@@ -1,0 +1,13 @@
+{
+  "name": "fairline",
+  "version": "1.0.0",
+  "description": "FairLine — model-vs-market pricing oracle for in-play soccer, driven by TxLINE score and odds state",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test",
+    "generate:fixture": "node scripts/generate-fixture.mjs",
+    "generate:keypair": "node scripts/generate-keypair.mjs",
+    "dev": "vercel dev"
+  }
+}

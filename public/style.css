@@ -1,0 +1,109 @@
+/* FairLine — dark trading-terminal surface, palette per dataviz reference (dark mode). */
+:root {
+  color-scheme: dark;
+  --page: #0d0d0d;
+  --surface: #1a1a19;
+  --surface-2: #222221;
+  --ink: #ffffff;
+  --ink-2: #c3c2b7;
+  --muted: #898781;
+  --grid: #2c2c2a;
+  --baseline: #383835;
+  --border: rgba(255, 255, 255, 0.10);
+  --home: #3987e5;   /* series 1 */
+  --draw: #008300;   /* series 2 */
+  --away: #d55181;   /* series 3 */
+  --good: #0ca30c;
+  --warn: #fab219;
+  --crit: #d03b3b;
+  --radius: 10px;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); color: var(--ink); font-size: 14px; line-height: 1.45; }
+
+/* header */
+.top { display: flex; align-items: center; gap: 16px; padding: 12px 20px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+.brand { display: flex; align-items: baseline; gap: 8px; }
+.mark { font-size: 20px; color: var(--home); }
+.name { font-weight: 700; font-size: 18px; letter-spacing: 0.2px; }
+.tag { color: var(--muted); font-size: 12px; }
+.modes { display: flex; gap: 4px; margin-left: auto; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 3px; }
+.modes button { background: none; border: 0; color: var(--ink-2); padding: 5px 12px; border-radius: 6px; cursor: pointer; font: inherit; font-size: 13px; }
+.modes button.active { background: var(--surface-2); color: var(--ink); font-weight: 600; }
+.chips { display: flex; gap: 8px; align-items: center; }
+.chip { font-size: 11px; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--border); color: var(--ink-2); white-space: nowrap; }
+.chip.synthetic { color: var(--warn); border-color: color-mix(in oklab, var(--warn) 45%, transparent); }
+.chip.live-real { color: var(--good); border-color: color-mix(in oklab, var(--good) 45%, transparent); }
+.chip.ok { color: var(--good); }
+.chip.bad { color: var(--crit); }
+.chip.muted { color: var(--muted); }
+
+/* scoreboard */
+.scoreboard { display: flex; align-items: center; justify-content: center; gap: 28px; padding: 18px 20px 10px; }
+.team { display: flex; align-items: center; gap: 10px; min-width: 180px; }
+.team.home { justify-content: flex-end; }
+.team-name { font-size: 22px; font-weight: 650; }
+.team.home .team-name { color: var(--home); }
+.team.away .team-name { color: var(--away); }
+.cards { font-size: 13px; letter-spacing: 1px; }
+.mid { text-align: center; }
+.score { font-size: 40px; font-weight: 750; line-height: 1; }
+.clock { color: var(--ink-2); font-size: 14px; margin-top: 4px; display: flex; gap: 10px; justify-content: center; font-variant-numeric: tabular-nums; }
+.phase { color: var(--muted); text-transform: uppercase; font-size: 11px; letter-spacing: 1px; align-self: center; }
+
+/* layout */
+main { max-width: 1180px; margin: 0 auto; padding: 8px 20px 20px; display: flex; flex-direction: column; gap: 14px; }
+.panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+.panel-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 8px; flex-wrap: wrap; }
+.panel h2 { font-size: 13px; font-weight: 600; color: var(--ink-2); margin: 0; text-transform: uppercase; letter-spacing: 0.6px; }
+.row { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; }
+@media (max-width: 900px) { .row { grid-template-columns: 1fr; } .team { min-width: 0; } }
+
+/* charts */
+.chart-wrap { position: relative; }
+.chart-wrap svg { width: 100%; height: 240px; display: block; }
+.legend { display: flex; gap: 14px; font-size: 12px; color: var(--ink-2); margin-left: auto; }
+.legend .key { display: inline-flex; align-items: center; gap: 5px; }
+.legend .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.swatch-line { display: inline-block; width: 22px; height: 0; border-top: 2px solid var(--ink-2); vertical-align: middle; margin: 0 2px; }
+.swatch-line.dashed { border-top-style: dashed; }
+.tooltip { position: absolute; pointer-events: none; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 12px; color: var(--ink-2); display: none; min-width: 170px; z-index: 5; box-shadow: 0 6px 18px rgba(0,0,0,0.4); }
+.tooltip .t-head { color: var(--ink); font-weight: 600; margin-bottom: 4px; font-variant-numeric: tabular-nums; }
+.tooltip table { border-collapse: collapse; width: 100%; }
+.tooltip td { padding: 1px 4px 1px 0; font-variant-numeric: tabular-nums; }
+
+/* price board */
+.board { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.board th { text-align: right; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; padding: 4px 8px; border-bottom: 1px solid var(--grid); }
+.board th:first-child { text-align: left; }
+.board td { padding: 6px 8px; text-align: right; border-bottom: 1px solid var(--grid); color: var(--ink-2); }
+.board td:first-child { text-align: left; color: var(--ink); }
+.board tr:last-child td { border-bottom: 0; }
+.board .pos { color: var(--good); }
+.board .neg { color: var(--crit); }
+.board .mkdot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 7px; vertical-align: 1px; }
+.board-note { color: var(--muted); font-size: 11px; }
+
+/* feed panel */
+.feed-desc { color: var(--ink-2); font-size: 13px; margin: 6px 0; }
+.code { background: var(--page); border: 1px solid var(--border); border-radius: 8px; padding: 9px 11px; font-family: ui-monospace, "Cascadia Code", Menlo, monospace; font-size: 11.5px; color: var(--ink-2); overflow-x: auto; white-space: pre-wrap; word-break: break-all; }
+.feed-links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; }
+.feed-links a { color: var(--home); text-decoration: none; font-size: 13px; }
+.feed-links a:hover { text-decoration: underline; }
+
+/* footer */
+footer { max-width: 1180px; margin: 0 auto; padding: 4px 20px 28px; color: var(--muted); font-size: 12px; }
+footer strong { color: var(--ink-2); }
+
+/* chart svg pieces (classes used from JS) */
+.gridline { stroke: var(--grid); stroke-width: 1; }
+.axis-label { fill: var(--muted); font-size: 10px; font-family: inherit; }
+.zero-line { stroke: var(--baseline); stroke-width: 1.5; }
+.phase-band { fill: rgba(255,255,255,0.03); }
+.event-line { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 2 3; }
+.event-icon { font-size: 11px; }
+.series { fill: none; stroke-width: 2; }
+.series.dashed { stroke-dasharray: 5 4; }
+.crosshair { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
