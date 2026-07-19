@@ -45,8 +45,13 @@ limits. That cadence shaped the design (10s poll, 60s history step).
 2. Docs pages describe flows well but omit example payloads; the OpenAPI YAML
    (`/docs/docs.yaml`) is the real source of truth and excellent — schemas for
    every message type; we generated our synthetic fixture directly from it.
-3. `/scores/updates/{fixtureId}` 404s/non-JSONs for this fixture while
-   `/scores/snapshot` works — we used the snapshot event list instead.
+3. `/scores/updates/{fixtureId}` returns the *complete* match history, but
+   as one-shot SSE-formatted `data:` lines, not a JSON array — an earlier
+   pass here called it broken based on `.json()` failing on it, which cost
+   real correctness during the live final: `/scores/snapshot`'s small
+   rolling window (~35-40 events) can silently drop real events (including
+   goals) between polls. Parse `/scores/updates` as SSE instead; it's the
+   reliable source for current state, not just history.
 4. Devnet airdrop faucets were dry, so the devnet path (free Level 1,
    0s sampling) was untestable from this environment; mainnet free tier
    worked end to end.

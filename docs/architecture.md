@@ -3,7 +3,7 @@
 ```
                                      ┌────────────────────────────────────────┐
    TxLINE mainnet (real)             │            FairLine engine             │
-   /scores/snapshot ─────┐           │                                        │
+   /scores/updates ───────┐          │                                        │
    /odds/snapshot?asOf ──┤  live     │  txline.js reducers                    │
    /odds/updates ────────┘  mode ──► │   scoreToState()  oddsToConsensus()    │
                                      │            │                │          │
@@ -41,7 +41,7 @@ computation. Consequences:
 
 Live mode keeps the same property per-tick: an envelope is a pure function of
 the latest upstream snapshots. Its edge *history* is rebuilt on demand from
-TxLINE's own `/odds/updates` + `/scores/snapshot` archives, so the deployment
+TxLINE's own `/odds/updates` + `/scores/updates` archives, so the deployment
 still needs no storage. **Storage seam:** a production deployment that wanted
 its own durable archive would insert an append-only store (S3/Postgres) behind
 `liveEdgeSeries()` — one function — without touching the pricing path.
