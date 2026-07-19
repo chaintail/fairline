@@ -9,5 +9,8 @@
     "generate:fixture": "node scripts/generate-fixture.mjs",
     "generate:keypair": "node scripts/generate-keypair.mjs",
     "dev": "vercel dev"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0"
   }
 }

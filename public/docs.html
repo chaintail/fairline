@@ -32,6 +32,19 @@ curl "/api/key"                      # Ed25519 public key + canonicalization</pr
         <a href="https://github.com/chaintail/fairline/blob/main/docs/architecture.md">architecture.md</a> ·
         <a href="https://github.com/chaintail/fairline/blob/main/docs/txline.md">txline.md</a></p>
     </section>
+    <section class="panel" style="margin-top:14px">
+      <h2 style="margin-top:0">For agents</h2>
+      <p class="feed-desc">Landing here as an agent? Start with <a style="color:var(--home)" href="/llms.txt">/llms.txt</a> — a plain-text index of everything below, sized for a model's context window.</p>
+      <p class="feed-desc">FairLine ships an <strong>MCP server</strong> (<code>mcp/server.mjs</code>, stdio, official <code>@modelcontextprotocol/sdk</code>) that wraps the read endpoints on this page as three tools, plus a Claude Code plugin bundle (<code>.claude-plugin/plugin.json</code>, <code>.mcp.json</code>, <code>skills/fairline/SKILL.md</code>) documenting how to use them:</p>
+      <pre class="code">get_fair_odds({ mode })              # -> current envelope: state + model + consensus + edge
+get_market_edge({ mode, sinceMs, limit })  # -> edge/divergence history over time
+get_signing_key({})                  # -> Ed25519 public key + canonicalization rule</pre>
+      <p class="feed-desc"><code>mode</code> is <code>replay</code> (default, a labeled synthetic fixture) or <code>live</code> (the real TxLINE feed, ~60s upstream delay, may be unconfigured on a given deployment — an honest error/503 there, not a bug). Repo, install steps, and the Codex-compatible <code>mcp_servers</code> config are in the <a style="color:var(--home)" href="https://github.com/chaintail/fairline#for-agents">README's "For agents" section</a>.</p>
+      <p class="feed-desc">No MCP available? Every tool above is a thin wrapper — hit the same endpoints directly over raw HTTP:</p>
+      <pre class="code">curl "/api/state?mode=replay"                          # same shape as get_fair_odds
+curl "/api/edge-log?mode=replay&format=json&sinceMs=0"  # same shape as get_market_edge
+curl "/api/key"                                          # same shape as get_signing_key</pre>
+    </section>
   </main>
 </body>
 </html>
