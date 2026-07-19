@@ -51,6 +51,18 @@ test("edge series covers kickoff to now and is bounded", () => {
   }
 });
 
+test("settled totals lines carry no consensus or edge", () => {
+  // at 2-1 (3 goals), lines 1.5 and 2.5 are settled: model may price them
+  // (certainty) but consensus/edge must be absent
+  const ftAfterThird = meta.segments.H2_START + 27 * 60; // 72' — score 2-1
+  const tick = replayTick(meta.anchorEpochMs + (ftAfterThird / meta.speed) * 1000);
+  assert.equal(tick.match.score.home + tick.match.score.away, 3);
+  assert.ok(!("1.5" in tick.consensus.totals), "no consensus on settled 1.5");
+  assert.ok(!("1.5" in tick.edge.totals), "no edge on settled 1.5");
+  assert.ok(!("2.5" in tick.edge.totals), "no edge on settled 2.5");
+  assert.ok("3.5" in tick.edge.totals, "live 3.5 line still has edge");
+});
+
 test("envelope signing round-trips and tamper is detected", () => {
   const { privateKey } = crypto.generateKeyPairSync("ed25519");
   process.env.FAIRLINE_SIGNING_KEY = privateKey.export({ format: "der", type: "pkcs8" }).toString("base64");
