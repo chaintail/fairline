@@ -384,6 +384,9 @@ footer { max-width: 1220px; margin: 0 auto; padding: 0 var(--sp-6) var(--sp-8); 
 .back-link { color: var(--ink-2); text-decoration: none; padding: 6px 14px; font-size: var(--text-sm); }
 .back-link:hover { color: var(--ink); }
 .docs-main code { font-family: var(--font-mono); background: var(--surface-2); padding: 1px 5px; border-radius: 4px; font-size: 0.92em; }
+.docs-main .feedback-list { margin: var(--sp-2) 0; padding-left: 1.3em; }
+.docs-main .feedback-list li { color: var(--ink-2); font-size: var(--text-sm); margin-bottom: var(--sp-3); }
+.docs-main .feedback-list li:last-child { margin-bottom: 0; }
 
 /* ================================================================ small screens */
 @media (max-width: 480px) {
