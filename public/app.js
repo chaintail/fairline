@@ -267,7 +267,10 @@
 
   async function loadHistory() {
     try {
-      const r = await fetch(`/api/edge-log?mode=${state.mode}`);
+      // live mode: rolling 3h window — without it, days of pre-match drift
+      // squeeze the in-play story into the right edge of the charts
+      const since = state.mode === "live" ? `&sinceMs=${Date.now() - 3 * 3600_000}` : "";
+      const r = await fetch(`/api/edge-log?mode=${state.mode}${since}`);
       const d = await r.json();
       state.rows = d.rows || [];
       redraw();

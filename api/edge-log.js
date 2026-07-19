@@ -17,7 +17,10 @@ export default async function handler(req, res) {
         res.status(503).json({ error: "live mode not configured; use mode=replay" });
         return;
       }
-      rows = await liveEdgeSeries();
+      const sinceMs = Number(req.query.sinceMs || 0) || 0;
+      // live edge steps at the upstream batch cadence (60s); a windowed
+      // request tightens to 20s so in-play action keeps its shape
+      rows = await liveEdgeSeries(sinceMs ? 20_000 : 60_000, 400, sinceMs);
     } else {
       rows = edgeSeries(fixtureTime(Date.now()), 30);
     }
