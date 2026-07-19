@@ -114,22 +114,22 @@
       <span class="live-badge"><span class="dot"></span>LIVE · real TxLINE mainnet feed</span>
       <div class="matchline">
         <span class="teams">Spain <span class="num" style="color:var(--muted); font-weight:400;">v</span> Argentina</span>
-        <span class="score num">0&nbsp;:&nbsp;0</span>
-        <span class="clock num">76:02 · 2nd half</span>
+        <span class="score num">1&nbsp;:&nbsp;0</span>
+        <span class="clock num">FT (aet) · Spain win</span>
       </div>
-      <p style="margin-bottom:0;">2026 World Cup Final, TxLINE fixture <code>18257739</code> — a scoreless stalemate dragging into the final quarter of the match, <em>as of this writing</em>. The match is ongoing; by the time you read this the score or clock may have moved on.</p>
+      <p style="margin-bottom:0;">2026 World Cup Final, TxLINE fixture <code>18257739</code> — final result: Spain 1, Argentina 0 after extra time, confirmed via the feed's own finalisation record. The match was still scoreless deep into the second half, so the numbers below are a real snapshot of in-play divergence captured earlier in the match, not the live-right-now state — kept because they're a genuine, checkable example of the model repricing ahead of the market, not because the game is still going.</p>
       <div class="caveat">Free-tier TxLINE mainnet feed: prices batch-delayed ~60 seconds. Informative, not tradeable — stated plainly, not buried.</div>
 
       <div class="edge-grid">
         <div class="edge-stat">
-          <div class="label">Draw — model vs. market</div>
+          <div class="label">Draw — model vs. market (76:02, 2nd half, still 0-0)</div>
           <div class="pair"><span class="model">68.7%</span><span class="vs">model</span> <span class="mkt">52.6%</span><span class="vs">market</span></div>
           <div class="delta pos">+16.1pp edge</div>
         </div>
         <div class="edge-stat">
-          <div class="label">Home win — edge</div>
+          <div class="label">Home win — edge (same snapshot)</div>
           <div class="delta neg">−14.5pp edge</div>
-          <p style="margin:6px 0 0; font-size:11px; color:var(--muted);">model rates a Spain breakthrough correspondingly less likely than the market does</p>
+          <p style="margin:6px 0 0; font-size:11px; color:var(--muted);">model rated a Spain breakthrough less likely than the market did — Spain went on to score in extra time and win 1-0</p>
         </div>
         <div class="edge-stat">
           <div class="label">Pre-match baseline (draw)</div>
@@ -137,7 +137,7 @@
           <div class="delta flat">&lt;0.3pp edge — essentially agreement</div>
         </div>
       </div>
-      <p style="margin-bottom:0;">The model currently prices a draw far more confidently than the market — and correspondingly discounts a Spain breakthrough that the market still rates more likely. Pre-match, model and market started in near-total agreement on the draw. <strong>The divergence you see now is real in-play repricing as the match unfolds, not model noise baked in from kickoff.</strong></p>
+      <p style="margin-bottom:0;">At 76:02, the model priced a draw far more confidently than the market did — and correspondingly discounted a Spain breakthrough that the market still rated more likely. Pre-match, model and market started in near-total agreement on the draw. <strong>That mid-match divergence was real in-play repricing as the game unfolded, not model noise baked in from kickoff</strong> — and Spain's eventual extra-time winner is a reminder that a model favoring the draw over a comeback isn't the same as ruling either team out.</p>
 
       <div class="chart-box">
         <div class="chart-head">
