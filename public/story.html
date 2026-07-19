@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FairLine — the submission story</title>
+  <meta name="description" content="A model-vs-market pricing oracle for in-play soccer: reprices continuously from real match state, publishes fair odds as signed data, logs its own edge against the market." />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://fairline-demo.vercel.app/story" />
+  <meta property="og:title" content="FairLine — model-vs-market pricing oracle" />
+  <meta property="og:description" content="Positioned as a pricing oracle, not a quoting bot: FairLine reprices soccer in-play from real match state and publishes signed fair odds you can check against the market." />
+  <meta property="og:image" content="https://fairline-demo.vercel.app/img/og-fairline.png" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="FairLine — model-vs-market pricing oracle" />
+  <meta name="twitter:description" content="Positioned as a pricing oracle, not a quoting bot: FairLine reprices soccer in-play from real match state and publishes signed fair odds you can check against the market." />
+  <meta name="twitter:image" content="https://fairline-demo.vercel.app/img/og-fairline.png" />
+
+  <link rel="stylesheet" href="/story.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚖️</text></svg>" />
+</head>
+<body class="story">
+  <nav class="storynav">
+    <div class="brand"><span class="mark">⚖</span><span class="name">FairLine</span><span class="tag">the submission story</span></div>
+    <div class="navlinks">
+      <a href="/">Live view</a>
+      <a href="/docs.html">Docs</a>
+      <a href="https://github.com/chaintail/fairline" target="_blank" rel="noopener">Repo</a>
+    </div>
+  </nav>
+
+  <!-- 1. HERO -->
+  <section class="hero">
+    <div class="hero-media"><img src="/img/story/hero.png" alt="Abstract diverging line paths over a data grid, representing a model repricing against the market" /></div>
+    <div class="hero-copy">
+      <h1><span class="mark">Fair</span>Line</h1>
+      <p class="position-line">A model-vs-market pricing oracle for in-play soccer — reprices continuously from real match state, publishes fair odds as signed data, logs its own edge against the market.</p>
+      <p class="strapline">&ldquo;It is positioned as a pricing oracle, not a quoting bot&rdquo;</p>
+      <div class="hero-tags">
+        <span class="chip">Ed25519-signed feed</span>
+        <span class="chip">Dixon-Coles in-play Poisson model</span>
+        <span class="chip">real TxLINE mainnet feed</span>
+        <span class="chip">MCP + llms.txt for agents</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. WHAT / WHY -->
+  <section>
+    <p class="eyebrow">Why it's different</p>
+    <h2>Odds you can check, not odds you take on faith</h2>
+    <div class="card-grid">
+      <div class="card">
+        <span class="icon">◎</span>
+        <h3>Checkable, not asserted</h3>
+        <p>Most in-play odds products are black boxes. FairLine publishes its actual model probabilities right next to the market's, so its "edge" is something you can check yourself, tick by tick — not a claim you have to trust.</p>
+      </div>
+      <div class="card">
+        <span class="icon">🔏</span>
+        <h3>Signed, not just stated</h3>
+        <p>Every published tick is an Ed25519-signed envelope. Anyone — human or agent — can verify any price against the feed's public key, offline, with no API trust required.</p>
+      </div>
+      <div class="card">
+        <span class="icon">≡</span>
+        <h3>One code path, honestly labeled</h3>
+        <p>The engine runs identically over a labeled synthetic replay (for demos) and the real TxLINE feed (for the live final). Same reducers, same model — never blended, always labeled which one you're looking at.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. HOW IT WORKS -->
+  <section class="wide">
+    <p class="eyebrow">How it works</p>
+    <h2>Score and clock in, signed fair prices out</h2>
+    <div class="pipeline">
+      <div class="pipe-stage">
+        <span class="stage-no">01</span>
+        <span class="stage-name">TxLINE score / clock / odds state</span>
+        <span class="stage-note">official match state + de-margined market consensus</span>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-stage">
+        <span class="stage-no">02</span>
+        <span class="stage-name">Dixon-Coles-corrected in-play Poisson model</span>
+        <span class="stage-note">time-varying scoring intensity, red-card adjustments</span>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-stage">
+        <span class="stage-no">03</span>
+        <span class="stage-name">Fair prices — 1X2 + totals</span>
+        <span class="stage-note">model probabilities converted to fair odds</span>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-stage">
+        <span class="stage-no">04</span>
+        <span class="stage-name">Signed envelope</span>
+        <span class="stage-note">Ed25519, canonical serialization, verifiable offline</span>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-stage">
+        <span class="stage-no">05</span>
+        <span class="stage-name">SSE feed + edge log</span>
+        <span class="stage-note">public stream, downloadable JSON/CSV history</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. TODAY'S LIVE FINAL -->
+  <section class="wide">
+    <p class="eyebrow">Today's live final — the differentiator</p>
+    <h2>Real fixture, real feed, real divergence — checkable right now</h2>
+    <div class="live-panel">
+      <span class="live-badge"><span class="dot"></span>LIVE · real TxLINE mainnet feed</span>
+      <div class="matchline">
+        <span class="teams">Spain <span class="num" style="color:var(--muted); font-weight:400;">v</span> Argentina</span>
+        <span class="score num">0&nbsp;:&nbsp;0</span>
+        <span class="clock num">76:02 · 2nd half</span>
+      </div>
+      <p style="margin-bottom:0;">2026 World Cup Final, TxLINE fixture <code>18257739</code> — a scoreless stalemate dragging into the final quarter of the match, <em>as of this writing</em>. The match is ongoing; by the time you read this the score or clock may have moved on.</p>
+      <div class="caveat">Free-tier TxLINE mainnet feed: prices batch-delayed ~60 seconds. Informative, not tradeable — stated plainly, not buried.</div>
+
+      <div class="edge-grid">
+        <div class="edge-stat">
+          <div class="label">Draw — model vs. market</div>
+          <div class="pair"><span class="model">68.7%</span><span class="vs">model</span> <span class="mkt">52.6%</span><span class="vs">market</span></div>
+          <div class="delta pos">+16.1pp edge</div>
+        </div>
+        <div class="edge-stat">
+          <div class="label">Home win — edge</div>
+          <div class="delta neg">−14.5pp edge</div>
+          <p style="margin:6px 0 0; font-size:11px; color:var(--muted);">model rates a Spain breakthrough correspondingly less likely than the market does</p>
+        </div>
+        <div class="edge-stat">
+          <div class="label">Pre-match baseline (draw)</div>
+          <div class="pair"><span class="model">31.6%</span><span class="vs">model</span> <span class="mkt">~31.4%</span><span class="vs">market</span></div>
+          <div class="delta flat">&lt;0.3pp edge — essentially agreement</div>
+        </div>
+      </div>
+      <p style="margin-bottom:0;">The model currently prices a draw far more confidently than the market — and correspondingly discounts a Spain breakthrough that the market still rates more likely. Pre-match, model and market started in near-total agreement on the draw. <strong>The divergence you see now is real in-play repricing as the match unfolds, not model noise baked in from kickoff.</strong></p>
+
+      <div class="chart-box">
+        <div class="chart-head">
+          <h3>Draw edge over time (model − market, probability points)</h3>
+          <span class="chart-status" id="chartStatus">loading live edge log…</span>
+        </div>
+        <div id="liveChartWrap">
+          <svg id="liveChart" preserveAspectRatio="none"></svg>
+          <div class="chart-fallback" id="chartFallback">Live edge log unavailable from this environment right now (network/CORS) — the chart degrades gracefully rather than breaking. See it live at <a href="https://fairline-demo.vercel.app/story">fairline-demo.vercel.app/story</a> or pull the data yourself: <code>curl "https://fairline-demo.vercel.app/api/edge-log?mode=live&amp;format=json&amp;sinceMs=0"</code></div>
+        </div>
+      </div>
+
+      <div class="support-media">
+        <img src="/img/story/flow.png" alt="Abstract visual of signed data flowing from source to feed" />
+      </div>
+
+      <p class="small-print">Supporting proof: <a href="https://shared.claude.do/public/fairline-live-final-addendum.mp4" target="_blank" rel="noopener">live-final addendum video</a>.</p>
+    </div>
+  </section>
+
+  <!-- 5. VERIFIABILITY -->
+  <section>
+    <p class="eyebrow">For judges &amp; agents</p>
+    <h2>Verify it yourself — or point an agent at it</h2>
+    <div class="verify-panel">
+      <a class="verify-link" href="https://github.com/chaintail/fairline" target="_blank" rel="noopener">
+        <span class="glyph">⌥</span><span class="txt"><strong>Source repo</strong><span>github.com/chaintail/fairline — MIT licensed</span></span>
+      </a>
+      <a class="verify-link" href="/docs.html">
+        <span class="glyph">▤</span><span class="txt"><strong>Feed &amp; model docs</strong><span>schema, math, verification recipe</span></span>
+      </a>
+      <a class="verify-link" href="/llms.txt">
+        <span class="glyph">⌘</span><span class="txt"><strong>/llms.txt</strong><span>plain-text index sized for a model's context window</span></span>
+      </a>
+      <a class="verify-link" href="https://github.com/chaintail/fairline#for-agents" target="_blank" rel="noopener">
+        <span class="glyph">◈</span><span class="txt"><strong>MCP server + Claude Code plugin</strong><span>README's "For agents" section — stdio MCP, three read tools</span></span>
+      </a>
+    </div>
+  </section>
+
+  <!-- 6. FOOTER -->
+  <footer>
+    <p class="honesty"><strong>What you are looking at:</strong> This page's live-final numbers were pulled from FairLine's own <code>/api/edge-log</code> and <code>/api/state</code> during this session and are real. The match is ongoing — treat the current score/clock as a snapshot, not a final result. Replay mode elsewhere on this site is a clearly-labeled synthetic fixture; live mode is the real TxLINE feed on a free-tier 60-second delay. No real-money claims anywhere.</p>
+    <div class="footlinks">
+      <a href="https://github.com/chaintail/fairline" target="_blank" rel="noopener">Repo</a>
+      <a href="/">Live demo</a>
+      <a href="/docs.html">Docs</a>
+    </div>
+  </footer>
+
+  <script src="/story.js"></script>
+</body>
+</html>
