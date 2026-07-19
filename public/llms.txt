@@ -1,0 +1,116 @@
+# FairLine
+
+> Model-vs-market pricing oracle for in-play soccer. FairLine reprices a
+> match continuously from real TxLINE score/clock/card state using a
+> transparent in-play Poisson model (Dixon-Coles corrected, red-card
+> adjusted), publishes fair odds (1X2 + totals) as Ed25519-signed JSON
+> envelopes, and logs its edge (model minus the de-margined TxLINE
+> StablePrice consensus) tick by tick. It is a pricing oracle, not a
+> quoting bot or a betting product — no real-money claims anywhere.
+
+Two modes, always labeled honestly in every response's `dataSource` field:
+
+- `replay` (default): a committed, seeded, deterministic **synthetic**
+  fixture. Always available. Its "consensus" is a simulated market, so edge
+  here demonstrates repricing mechanics, not real predictive skill.
+- `live`: the real TxLINE mainnet feed for a 2026 World Cup Final fixture,
+  with a **~60 second** upstream batch delay (informative, not tradeable).
+  May be unconfigured on a given deployment, in which case read endpoints
+  return HTTP 503 — expected and honest, not a bug.
+
+Full docs: https://github.com/chaintail/fairline — see docs/architecture.md,
+docs/feed.md, docs/model.md, docs/txline.md. Human-facing live view and docs
+page: https://fairline-demo.vercel.app/ and /docs.html. License: MIT.
+
+## Read endpoints (raw HTTP)
+
+All are public, CORS-open, no auth. Base URL: https://fairline-demo.vercel.app
+
+- `GET /api/state?mode=replay|live` — one signed envelope: match state
+  (score/clock/phase/cards), model probabilities + fair prices (1X2,
+  totals), the de-margined consensus when available, per-outcome edge
+  (probability points + EV).
+
+  ```
+  curl "https://fairline-demo.vercel.app/api/state?mode=replay"
+  ```
+
+- `GET /api/edge-log?mode=replay|live&format=json|csv&sinceMs=<ms>` —
+  historical series of model-vs-consensus edge over time (the divergence
+  trail). `sinceMs` (epoch ms) windows to recent action.
+
+  ```
+  curl "https://fairline-demo.vercel.app/api/edge-log?mode=replay&format=json&sinceMs=0"
+  curl "https://fairline-demo.vercel.app/api/edge-log?mode=live&format=csv"
+  ```
+
+- `GET /api/key` — the feed's Ed25519 public key and the exact
+  canonicalization rule for verifying an envelope's signature.
+
+  ```
+  curl "https://fairline-demo.vercel.app/api/key"
+  ```
+
+- `GET /api/feed?mode=replay|live` — `text/event-stream` (SSE) of the same
+  signed envelopes, one `price` event per tick (1/sec replay, ~1/10s live).
+  Long-lived and read-only; not wrapped as an MCP tool (a poor fit for a
+  request/response call) — use `/api/state` for a single current tick from
+  an agent, or subscribe to the SSE stream directly if you need the series
+  live.
+
+  ```
+  curl -N "https://fairline-demo.vercel.app/api/feed?mode=replay"
+  ```
+
+- `POST /api/verify` — reference envelope-verification convenience (send a
+  full envelope JSON body; returns whether its signature checks out).
+
+## MCP tools
+
+FairLine ships a thin stdio MCP server (`mcp/server.mjs` in the repo, using
+the official `@modelcontextprotocol/sdk`) that wraps the read endpoints
+above — no pricing logic of its own, just fetch + reshape:
+
+- `get_fair_odds({ mode })` — wraps `GET /api/state`. `mode` defaults to
+  `replay`.
+- `get_market_edge({ mode, sinceMs, limit })` — wraps `GET /api/edge-log`.
+  `sinceMs` and `limit` are optional.
+- `get_signing_key({})` — wraps `GET /api/key`.
+
+Every tool's description states the replay/live honesty notes above
+in-band; none oversell "real-time" or "guaranteed accuracy."
+
+## Installing the MCP server / Claude Code plugin
+
+```bash
+git clone https://github.com/chaintail/fairline
+cd fairline
+npm install                 # pulls in @modelcontextprotocol/sdk, the one added dep
+FAIRLINE_BASE_URL=https://fairline-demo.vercel.app node mcp/server.mjs
+```
+
+The repo is also a Claude Code plugin: `.claude-plugin/plugin.json` +
+`.mcp.json` wire the `fairline` MCP server to
+`node ${CLAUDE_PLUGIN_ROOT}/mcp/server.mjs`, and `skills/fairline/SKILL.md`
+documents tool usage, honest caveats, and a described (prose-only, not
+implemented) pattern for polling `get_market_edge` and reacting when
+divergence crosses a threshold.
+
+Codex works with the same stdio server via its `mcp_servers` config
+(`~/.codex/config.toml`):
+
+```toml
+[mcp_servers.fairline]
+command = "node"
+args = ["/absolute/path/to/fairline/mcp/server.mjs"]
+
+[mcp_servers.fairline.env]
+FAIRLINE_BASE_URL = "https://fairline-demo.vercel.app"
+```
+
+## Links
+
+- Repo: https://github.com/chaintail/fairline
+- Live demo: https://fairline-demo.vercel.app
+- Docs page: https://fairline-demo.vercel.app/docs.html
+- Skill: https://github.com/chaintail/fairline/blob/main/skills/fairline/SKILL.md

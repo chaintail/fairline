@@ -80,9 +80,47 @@ lib/       model.js (pricing math) · txline.js (feed reducers) · engine.js (re
 api/       Vercel serverless endpoints (feed, state, edge-log, key, verify)
 fixtures/  committed synthetic replay fixture (seeded, regenerable)
 scripts/   fixture generator · keypair generator · dev server
-public/    the live view (no-dependency SVG charts)
+public/    the live view (no-dependency SVG charts) · llms.txt (agent-facing index)
 docs/      model math · feed schema · architecture · TxLINE integration notes
+mcp/       stdio MCP server wrapping the read endpoints above (agent access)
+skills/    fairline/SKILL.md — how an agent should use the MCP tools
 test/      node --test suites
 ```
+
+## For agents
+
+FairLine ships a thin **stdio MCP server** (`mcp/server.mjs`, using the
+official `@modelcontextprotocol/sdk`) that wraps the read endpoints above as
+three tools — `get_fair_odds`, `get_market_edge`, `get_signing_key` — plus a
+Claude Code plugin bundle (`.claude-plugin/plugin.json` + `.mcp.json` +
+`skills/fairline/SKILL.md`) that documents how to use them, including honest
+replay-vs-live caveats and a described (not implemented) divergence-polling
+pattern. Agents without MCP access can hit the same endpoints directly; see
+`public/llms.txt` (served at `/llms.txt` on the live site) for the raw-HTTP
+fallback.
+
+```bash
+npm install                 # pulls in @modelcontextprotocol/sdk, the one added dep
+FAIRLINE_BASE_URL=https://fairline-demo.vercel.app node mcp/server.mjs
+```
+
+### Codex compatibility
+
+The same stdio server works unchanged with Codex's `mcp_servers` config
+(`~/.codex/config.toml` or a project-level equivalent):
+
+```toml
+[mcp_servers.fairline]
+command = "node"
+args = ["/absolute/path/to/fairline/mcp/server.mjs"]
+
+[mcp_servers.fairline.env]
+FAIRLINE_BASE_URL = "https://fairline-demo.vercel.app"
+```
+
+Codex plugins don't have a sub-agent mechanism, and this bundle doesn't rely
+on one — the tools are plain request/response wrappers, and the
+divergence-polling pattern in the skill is described in prose for the host
+agent to run itself, not delegated to a spawned sub-agent.
 
 MIT license.
