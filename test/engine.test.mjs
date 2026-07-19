@@ -83,18 +83,18 @@ test("txline score payload reduction (real StatusId shape, both clock spellings)
   // Real TxLINE snapshot shape (verified against the 2026 World Cup Final
   // feed, fixture 18257739): StatusId is numeric, not a phase string, and
   // Clock's own keys are PascalCase (Running/Seconds).
-  const pascal = { FixtureId: 1, StatusId: 2, Clock: { Running: true, Seconds: 3000 }, Score: { Participant1: { Total: { Goals: 2, RedCards: 0, YellowCards: 1, Corners: 3 } }, Participant2: { Total: { Goals: 1, RedCards: 1, YellowCards: 2, Corners: 1 } } } };
+  const pascal = { FixtureId: 1, StatusId: 4, Clock: { Running: true, Seconds: 3000 }, Score: { Participant1: { Total: { Goals: 2, RedCards: 0, YellowCards: 1, Corners: 3 } }, Participant2: { Total: { Goals: 1, RedCards: 1, YellowCards: 2, Corners: 1 } } } };
   const s = scoreToState(pascal);
   assert.equal(s.goalsHome, 2);
   assert.equal(s.redsAway, 1);
-  // StatusId 2 is shared by both halves; clockSeconds past the 45:00 mark
-  // (2700s) is what discriminates H2 from H1.
+  // StatusId 4 = second half (confirmed against the real fixture's actual
+  // second-half kickoff event).
   assert.equal(s.phase, "H2");
   assert.ok(normalizedTime(s.phase, s.clockSeconds) > 0.5);
 
   const camel = { fixtureId: 1, statusId: 2, clock: { running: true, seconds: 1200 }, score: { participant1: { total: { goals: 0, redCards: 0 } }, participant2: { total: { goals: 0, redCards: 0 } } } };
   const c = scoreToState(camel);
-  assert.equal(c.phase, "H1", "clockSeconds before 45:00 is first half");
+  assert.equal(c.phase, "H1", "StatusId 2 = first half");
   assert.equal(c.clockRunning, true);
 
   const halftime = { FixtureId: 1, StatusId: 3, Clock: null, Score: {} };
