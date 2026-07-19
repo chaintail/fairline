@@ -1,7 +1,8 @@
 /* FairLine front end — no dependencies, hand-rolled SVG charts. */
 (() => {
   const OUTCOMES = ["home", "draw", "away"];
-  const COLORS = { home: "#3987e5", draw: "#008300", away: "#d55181" };
+  // cool -> neutral -> warm, mirroring the scoreboard's left/center/right order
+  const COLORS = { home: "#5b9bd9", draw: "#e0a63f", away: "#c77dc9" };
   const $ = (id) => document.getElementById(id);
 
   const state = {
@@ -160,7 +161,7 @@
     const svg = $(svgId);
     const W = svg.clientWidth || 900, H = svg.clientHeight || 240;
     svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
-    const PAD = { l: 44, r: 12, t: 10, b: 22 };
+    const PAD = { l: 44, r: 38, t: 10, b: 22 };
     const iw = W - PAD.l - PAD.r, ih = H - PAD.t - PAD.b;
     if (!rows.length) { svg.innerHTML = `<text x="${W / 2}" y="${H / 2}" text-anchor="middle" class="axis-label">waiting for data…</text>`; return; }
 
@@ -190,15 +191,28 @@
       out += `<text class="event-icon" x="${X(m.x)}" y="${PAD.t + 10}" text-anchor="middle">${m.icon}</text>`;
     }
     // series
+    const endPoints = [];
     for (const s of seriesDef) {
-      let d = "", pen = false;
+      let d = "", pen = false, lastPt = null;
       for (const r of rows) {
         const v = s.get(r);
         if (v == null) { pen = false; continue; }
         d += (pen ? "L" : "M") + X(rowX(r)).toFixed(1) + " " + Y(v).toFixed(1) + " ";
         pen = true;
+        lastPt = { v, y: Y(v) };
       }
       out += `<path class="series ${s.dashed ? "dashed" : ""}" stroke="${s.color}" d="${d}"/>`;
+      // direct end labels only for the solid (model) series — keeps the
+      // right edge readable instead of doubling every dashed twin too
+      if (lastPt && !s.dashed) endPoints.push({ color: s.color, y: lastPt.y, text: yFormat(lastPt.v) });
+    }
+    // nudge labels apart vertically so close values don't collide
+    endPoints.sort((a, b) => a.y - b.y);
+    for (let i = 1; i < endPoints.length; i++) {
+      if (endPoints[i].y - endPoints[i - 1].y < 11) endPoints[i].y = endPoints[i - 1].y + 11;
+    }
+    for (const p of endPoints) {
+      out += `<text class="series-label" x="${W - PAD.r + 4}" y="${p.y.toFixed(1)}" fill="${p.color}">${p.text}</text>`;
     }
     svg.innerHTML = out;
 
@@ -321,11 +335,11 @@
     const chip = $("dataChip");
     if (state.mode === "live") {
       chip.textContent = "REAL TxLINE DATA · 60s delay";
-      chip.className = "chip live-real";
+      chip.className = "mode-badge live-real";
       $("honestyText").innerHTML = "Live mode ingests the <em>real</em> TxLINE StablePrice feed (free World Cup tier, 60-second batch delay) and official score state for the 2026 World Cup Final, reprices it continuously with the FairLine model, and signs every published tick. The model baseline was frozen from the pre-match consensus. Replay mode (the default view) is a clearly-labeled synthetic fixture for deterministic demos.";
     } else {
       chip.textContent = "SYNTHETIC FIXTURE";
-      chip.className = "chip synthetic";
+      chip.className = "mode-badge synthetic";
       $("honestyText").innerHTML = "Replay mode replays a deterministic, seeded <em>synthetic</em> TxLINE-shaped fixture — synthetic score events and a simulated de-margined consensus path — through exactly the code path a live TxLINE feed enters. It demonstrates the engine's mechanics, not real-world alpha. Live mode ingests the real TxLINE StablePrice feed (free World Cup tier, 60-second batch delay) for the 2026 World Cup Final.";
     }
     $("curlFeed").textContent = `curl -N "${location.origin}/api/feed?mode=${state.mode}"`;
