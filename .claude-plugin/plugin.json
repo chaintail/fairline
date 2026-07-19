@@ -1,0 +1,12 @@
+{
+  "name": "fairline",
+  "version": "1.0.0",
+  "description": "Agent access to FairLine, a model-vs-market soccer pricing oracle: MCP tools over FairLine's public read endpoints (fair odds, model-vs-market edge history, Ed25519 signing key) plus a skill on how to use them, including an honest replay-vs-live and signal-vs-noise briefing.",
+  "author": {
+    "name": "FairLine"
+  },
+  "homepage": "https://fairline-demo.vercel.app",
+  "repository": "https://github.com/chaintail/fairline",
+  "license": "MIT",
+  "keywords": ["mcp", "sports", "soccer", "pricing", "oracle", "odds", "txline"]
+}
